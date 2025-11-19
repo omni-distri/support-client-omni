@@ -1,39 +1,51 @@
+```typescript
 import React, { useEffect } from 'react';
 
 const SupportPage: React.FC = () => {
+    const widgetContainerRef = React.useRef<HTMLDivElement>(null);
+
     useEffect(() => {
+        if (!widgetContainerRef.current) return;
+
         // Load eDesk widget script
         const script = document.createElement('script');
+        
+        // We define the script content as a string.
+        // Note: We need to escape backticks and ensure the string is valid JS.
+        // We also need to ensure the target element is found correctly.
+        // Since we can't pass the ref element directly into the string context easily without global vars,
+        // we will use a unique ID for the container and let the script find it.
+        
         script.innerHTML = `
-      (window._xsq||function(x,s){
-        window._xsq=[];
-        var c,b,a=document.createElement("iframe");
-        a.src="javascript:false";
-        a.title="";
-        a.role="presentation";
-        (a.frameElement||a).style.cssText="display: none";
-        document.body.appendChild(a);
-        try{b=a.contentWindow.document}catch(f){
-          c=document.domain,
-          a.src="javascript:var d=document.open();d.domain='"+c+"';void(0);",
-          b=a.contentWindow.document
-        }
-        b.open()._l=function(){
-          var a=this.createElement("script");
-          c&&(this.domain=c);
-          a.id="js-iframe-async";
-          a.src="https://"+x+s;
-          this.body.appendChild(a)
-        };
-        b.write('<body onload="document._l();">');
-        b.close();
-        return _xsq
-      })("widgets.xsellco.com","/js/widgets.js").push(["load","aw0j44102",document.scripts[document.scripts.length-1]]);
-    `;
+    (window._xsq = window._xsq || []).push(["load", "aw0j44102", document.getElementById("edesk-widget-container")]);
+
+(function (x, s) {
+    var c, b, a = document.createElement("iframe");
+    a.src = "javascript:false";
+    a.title = "";
+    a.role = "presentation";
+    (a.frameElement || a).style.cssText = "display: none";
+    document.body.appendChild(a);
+    try { b = a.contentWindow.document } catch (f) {
+        c = document.domain;
+        a.src = "javascript:var d=document.open();d.domain='" + c + "';void(0);";
+        b = a.contentWindow.document;
+    }
+    b.open()._l = function () {
+        var a = this.createElement("script");
+        c && (this.domain = c);
+        a.id = "js-iframe-async";
+        a.src = "https://" + x + s;
+        this.body.appendChild(a);
+    };
+    b.write('<body onload="document._l();">');
+    b.close();
+})("widgets.xsellco.com", "/js/widgets.js");
+`;
+        
         document.body.appendChild(script);
 
         return () => {
-            // Cleanup script on unmount
             if (script.parentNode) {
                 script.parentNode.removeChild(script);
             }
@@ -58,20 +70,23 @@ const SupportPage: React.FC = () => {
                             Comment pouvons-nous vous aider ?
                         </h2>
                         <p className="text-slate-600 mb-6">
-                            Le widget de support eDesk apparaîtra automatiquement sur cette page.
-                            Vous pouvez l'utiliser pour :
+                            Le widget de support eDesk apparaîtra automatiquement ci-dessous :
                         </p>
-                        <ul className="text-slate-600 space-y-2 mb-8">
-                            <li>Poser des questions sur nos produits</li>
-                            <li>Obtenir de l'aide technique</li>
-                            <li>Suivre vos demandes de support</li>
-                            <li>Contacter notre équipe en temps réel</li>
-                        </ul>
+                        
+                        {/* Container for the widget */}
+                        <div 
+                            id="edesk-widget-container" 
+                            ref={widgetContainerRef}
+                            className="min-h-[400px] border-2 border-dashed border-slate-200 rounded-lg p-4 flex items-center justify-center bg-slate-50"
+                        >
+                            <p className="text-slate-400 text-sm">
+                                Le widget se charge ici...
+                            </p>
+                        </div>
 
-                        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                        <div className="mt-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
                             <p className="text-sm text-blue-800">
-                                <strong>Note :</strong> Le widget eDesk se chargera automatiquement.
-                                Si vous ne le voyez pas, assurez-vous que JavaScript est activé dans votre navigateur.
+                                <strong>Note :</strong> Si le widget ne s'affiche pas, assurez-vous d'avoir désactivé votre bloqueur de publicité.
                             </p>
                         </div>
                     </div>
