@@ -1,4 +1,4 @@
-```typescript
+
 import React, { useEffect } from 'react';
 
 const SupportPage: React.FC = () => {
@@ -9,13 +9,13 @@ const SupportPage: React.FC = () => {
 
         // Load eDesk widget script
         const script = document.createElement('script');
-        
+
         // We define the script content as a string.
         // Note: We need to escape backticks and ensure the string is valid JS.
         // We also need to ensure the target element is found correctly.
         // Since we can't pass the ref element directly into the string context easily without global vars,
         // we will use a unique ID for the container and let the script find it.
-        
+
         script.innerHTML = `
     (window._xsq = window._xsq || []).push(["load", "aw0j44102", document.getElementById("edesk-widget-container")]);
 
@@ -42,7 +42,7 @@ const SupportPage: React.FC = () => {
     b.close();
 })("widgets.xsellco.com", "/js/widgets.js");
 `;
-        
+
         document.body.appendChild(script);
 
         return () => {
@@ -72,10 +72,10 @@ const SupportPage: React.FC = () => {
                         <p className="text-slate-600 mb-6">
                             Le widget de support eDesk apparaîtra automatiquement ci-dessous :
                         </p>
-                        
+
                         {/* Container for the widget */}
-                        <div 
-                            id="edesk-widget-container" 
+                        <div
+                            id="edesk-widget-container"
                             ref={widgetContainerRef}
                             className="min-h-[400px] border-2 border-dashed border-slate-200 rounded-lg p-4 flex items-center justify-center bg-slate-50"
                         >
