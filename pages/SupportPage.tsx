@@ -9,41 +9,15 @@ const SupportPage: React.FC = () => {
 
         // Load eDesk widget script
         const script = document.createElement('script');
-
-        // We define the script content as a string.
-        // Note: We need to escape backticks and ensure the string is valid JS.
-        // We also need to ensure the target element is found correctly.
-        // Since we can't pass the ref element directly into the string context easily without global vars,
-        // we will use a unique ID for the container and let the script find it.
-
-        script.innerHTML = `
-    (window._xsq = window._xsq || []).push(["load", "aw0j44102", document.getElementById("edesk-widget-container")]);
-
-(function (x, s) {
-    var c, b, a = document.createElement("iframe");
-    a.src = "javascript:false";
-    a.title = "";
-    a.role = "presentation";
-    (a.frameElement || a).style.cssText = "display: none";
-    document.body.appendChild(a);
-    try { b = a.contentWindow.document } catch (f) {
-        c = document.domain;
-        a.src = "javascript:var d=document.open();d.domain='" + c + "';void(0);";
-        b = a.contentWindow.document;
-    }
-    b.open()._l = function () {
-        var a = this.createElement("script");
-        c && (this.domain = c);
-        a.id = "js-iframe-async";
-        a.src = "https://" + x + s;
-        this.body.appendChild(a);
-    };
-    b.write('<body onload="document._l();">');
-    b.close();
-})("widgets.xsellco.com", "/js/widgets.js");
-`;
-
-        document.body.appendChild(script);
+        
+        // Use the exact snippet provided by support
+        // We inject it into the script tag's innerHTML
+        script.innerHTML = `(window._xsq||function(x,s){window._xsq=[];var c,b,a=document.createElement("iframe");a.src="javascript:false";a.title="";a.role="presentation";(a.frameElement||a).style.cssText="display: none";document.body.appendChild(a);try{b=a.contentWindow.document}catch(f){c=document.domain,a.src="javascript:var d=document.open();d.domain='"+c+"';void(0);",b=a.contentWindow.document}b.open()._l=function(){var a=this.createElement("script");c&&(this.domain=c);a.id="js-iframe-async";a.src="https://"+x+s;this.body.appendChild(a)};b.write('<body onload="document._l();">');b.close();return _xsq})("widgets.xsellco.com","/js/widgets.js").push(["load","aw0j44102",document.scripts[document.scripts.length-1]]);`;
+        
+        // Append the script to our specific container instead of body
+        // This way, document.scripts[document.scripts.length-1] (if it resolves to this script)
+        // is inside our container, and hopefully the widget renders relative to it.
+        widgetContainerRef.current.appendChild(script);
 
         return () => {
             if (script.parentNode) {
